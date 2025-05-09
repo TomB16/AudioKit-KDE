@@ -1,0 +1,19 @@
+#
+# AudioKit-servicemenu.desktop
+#
+#
+
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=audio/x-ms-wma
+X-KDE-Priority=TopLevel
+X-KDE-Submenu=AudioKit
+Actions=AudioKit-KDE-Wma2Flac
+
+[Desktop Action AudioKit-KDE-Wma2Flac]
+Name=Convert WMA to FLAC
+#TryExec=audiokit-wma2flac
+Exec=audiokit-wma2flac "%f"
+Icon=audio-x-generic
+Terminal=true
