@@ -11,7 +11,7 @@ url="https://github.com/TomB16/VideoKit-KDE"
 license=('MIT')
 depends=('ffmpeg')  # Add any runtime deps here
 makedepends=('git')
-source=("git+https://github.com/TomB16/AudioKit-KDE.git#branch=master")  # Fetch from GitHub repo
+source=("git+https://github.com/TomB16/AudioKit-KDE.git#branch=main")  # Fetch from GitHub repo
 sha256sums=('SKIP')  # Don't need this when using Git as source
 
 
@@ -28,10 +28,10 @@ package() {
   install -Dm755 "$srcdir/AudioKit-KDE/src/audiokit-wma2flac"            "$pkgdir/usr/bin/audiokit-wma2flac"
 
   # Install .desktop file
-  install -Dm644 "$srcdir/VideoKit-KDE/audiokit.desktop" "$pkgdir/usr/share/kio/servicemenus/audiokit.desktop"
+  install -Dm644 "$srcdir/AudioKit-KDE/audiokit.desktop" "$pkgdir/usr/share/kio/servicemenus/audiokit.desktop"
 
   # License
-  install -Dm644 "$srcdir/VideoKit-KDE/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 "$srcdir/Audio-KDE/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 
   # Rebuild KDE service cache
   if command -v kbuildsycoca5 &> /dev/null; then kbuildsycoca5; fi
