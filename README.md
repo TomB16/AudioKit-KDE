@@ -25,15 +25,15 @@ This package is available as an [AUR package](https://aur.archlinux.org/) for Ar
 To install manually:
 
 On bash:
-git clone https://github.com/TomB16/AudioKit-KDE.git
-cd AudioKit-KDE
+git clone https://github.com/TomB16/audiokit-kde.git
+cd audiokit-kde
 makepkg -si
 
 
 
 On Arch:
 
-yay -S audio-kde
+yay -S audiokit-kde
 
 
 
