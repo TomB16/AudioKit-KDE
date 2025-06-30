@@ -42,3 +42,4 @@ yay -S audiokit-kde
 Using these converters is extremely straight forward.  Right click and choose.
 
 
+![AudioKit Screenshot](https://github.com/TomB16/AudioKit-KDE/raw/main/Screenshot_audiokit.png)
