@@ -5,15 +5,22 @@
 
 [Desktop Entry]
 Type=Service
-ServiceTypes=KonqPopupMenu/Plugin
-MimeType=audio/x-ms-wma
+ServiceTypes=KonqPopupMenu/Plugin,audio/*
+MimeType=audio/*;
 X-KDE-Priority=TopLevel
 X-KDE-Submenu=AudioKit
-Actions=AudioKit-KDE-Wma2Flac
+Actions=audiokit-2flac;audiokit-flacon
 
-[Desktop Action AudioKit-KDE-Wma2Flac]
-Name=Convert WMA to FLAC
-#TryExec=audiokit-wma2flac
-Exec=audiokit-wma2flac "%f"
+[Desktop Action audiokit-2flac]
+Name=Convert to FLAC
+MimeType=audio/x-ms-wma
+Exec=audiokit-2flac -q "%f"
 Icon=audio-x-generic
+Terminal=true
+
+[Desktop Action audiokit-flacon]
+Name=Split FLAC with flacon
+MimeType=audio/flac;audio/x-flac;
+Exec=flacon -s -p "%f"
+Icon=flacon
 Terminal=true

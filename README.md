@@ -42,4 +42,3 @@ yay -S audio-kde
 Using these converters is extremely straight forward.  Right click and choose.
 
 
-<img src="https://github.com/TomB16/VideoKit-KDE/blob/master/Screenshot1.png" width="800" alt="Screenshot">
