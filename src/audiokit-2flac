@@ -1,0 +1,124 @@
+#!/bin/bash
+
+#!/bin/bash
+#
+# Audio-KDE - A set of audio utilities for KDE, extending Dolphin.
+#	- audiokit-wma2flac
+#
+# Author:  Tom Brown (https://github.com/TomB16)
+# Contact: tom@CarlsonSpeed.com
+# License: MIT License
+#
+# Copyright (c) 2025 Tom Brown
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+
+#!/bin/bash
+
+
+# initialize vars
+
+QUIET=0
+RESULT=0
+INPUT_FILE=""
+
+# Parse flags and arguments
+for arg in "$@"; do
+    case "$arg" in
+        -q|--quiet)
+            QUIET=1
+            ;;
+        *)
+            if [ -z "$INPUT_FILE" ]; then   INPUT_FILE="$arg";      fi
+            ;;
+    esac
+done
+
+
+# Ensure input file exists
+
+if [[ "$RESULT" -eq 0  && ! -f "$INPUT_FILE" ]];                   then    RESULT=2;       fi
+if [ "$RESULT" -eq 0 ] && ! command -v ffprobe >/dev/null 2>&1;    then    RESULT=4;       fi
+if [ "$RESULT" -eq 0 ] && ! command -v ffmpeg >/dev/null 2>&1;     then    RESULT=5;       fi
+
+
+# Get codec name using ffprobe
+
+codec=$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_name \
+         -of default=noprint_wrappers=1:nokey=1 "$INPUT_FILE")
+
+# Define supported lossless codecs
+
+case "$codec" in
+    flac|alac|pcm_s16le|pcm_s24le|pcm_f32le|pcm_s32le|ape|wavpack|wmalossless)
+        [ "$QUIET" -eq 0 ] && echo "Detected lossless codec: $codec"
+        ;;
+    *)
+        RESULT=10;
+        ;;
+esac
+
+
+# Generate output filename
+
+output_file="${INPUT_FILE%.*}.flac"
+
+# Convert using ffmpeg
+
+if [ "$RESULT" -eq 0 ];    then
+
+    [ "$QUIET" -eq 0 ] && echo "Converting '$INPUT_FILE' to '$output_file'..."
+    SECONDS=0
+    systemd-inhibit --why="Converting audio" nice -n 19 ffmpeg -hide_banner -loglevel error -y -i "$INPUT_FILE" -c:a flac -compression_level 12 "$output_file"
+    DURATION=$SECONDS
+    if [ $? -eq 0 ]; then   STATUS="OK";    else    STATUS="FAIL";      RESULT=1;       fi
+
+fi
+
+
+# note status
+
+case "$RESULT" in
+
+    0|1)
+        FORMATTED_TIME=$(printf '%02d:%02d:%02d' $((DURATION/3600)) $(((DURATION%3600)/60)) $((DURATION%60)))
+        MESSAGE="[$STATUS] input='$INPUT_FILE'  output='$output_file'  processing time=$FORMATTED_TIME"
+        ;;
+    2)
+        MESSAGE="[FAIL] file not found"
+        ;;
+    4)
+        MESSAGE="[FAIL] command ffprobe not available"
+        ;;
+    5)
+        MESSAGE="[FAIL] command ffmpeg not available"
+        ;;
+    10)
+        MESSAGE="[FAIL] source file $INPUT_FILE uses unsupported codec $codec"
+        ;;
+
+esac
+
+
+[ "$QUIET" -eq 0 ] && echo "$MESSAGE"
+logger --tag audiokit-2flac "$MESSAGE"
+
+
+exit $RESULT

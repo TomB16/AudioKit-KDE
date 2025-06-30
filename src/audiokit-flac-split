@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Full path to the selected FLAC file from service menu
+FLAC_FILE="$1"
+
+# Validate input
+if [[ ! -f "$FLAC_FILE" ]]; then
+    echo "Error: FLAC file not found: $FLAC_FILE"
+    exit 1
+fi
+
+# Derive cue file path
+CUE_FILE="${FLAC_FILE%.flac}.cue"
+
+if [[ ! -f "$CUE_FILE" ]]; then
+    echo "Error: CUE file not found: $CUE_FILE"
+    exit 1
+fi
+
+
+# Assume $CUE_FILE is the path to your cue file
+
+artist=$(grep -m1 '^PERFORMER' "$CUE_FILE" | sed 's/PERFORMER "\(.*\)"/\1/')
+album=$(grep -m1 '^TITLE' "$CUE_FILE" | sed 's/TITLE "\(.*\)"/\1/')
+year=$(grep -i '^REM DATE' "$CUE_FILE" | head -n1 | sed -r 's/^REM DATE[ \t]*([0-9]{4}).*/\1/')
+
+OUTPUT_DIR="$year - $album"
+
+
+# Create output directory next to FLAC file
+
+#OUTPUT_DIR="$(dirname "$FLAC_FILE")/split_$(basename "${FLAC_FILE%.flac}")"
+mkdir -p "$OUTPUT_DIR"
+
+# Split the FLAC file
+
+shnsplit -f "$CUE_FILE" -o flac -t "%n - %t" -d "$OUTPUT_DIR" "$FLAC_FILE"
+
+cuetag.sh "$CUE_FILE" "$OUTPUT_DIR"/*.flac
+
