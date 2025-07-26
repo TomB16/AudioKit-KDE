@@ -24,10 +24,10 @@
 source bashdev-app
 
 APP_NAME=$(basename "$0")
-APP_VERSION="0.0.1"
+APP_VERSION="0.3.0"
 APP_AUTHOR="Tom Brown"
 APP_YEAR="2025"
-APP_LICENSE="MIT"
+APP_LICENSE="GPLv3"
 APP_DESC="Split monolithic audio files into tracks"
 
 app::masthead "$APP_NAME" "$APP_VERSION" "$APP_AUTHOR" "$APP_YEAR" "$APP_LICENSE" "$APP_DESC"
