@@ -1,5 +1,39 @@
 #!/bin/bash
 
+#
+# This file is part of audiokit-kde.
+# Copyright (C) 2025 Tom Brown
+#
+# audiokit-kde is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# audiokit-kde is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+
+# masthead
+
+source bashdev-app
+
+APP_NAME=$(basename "$0")
+APP_VERSION="0.0.1"
+APP_AUTHOR="Tom Brown"
+APP_YEAR="2025"
+APP_LICENSE="MIT"
+APP_DESC="Split monolithic audio files into tracks"
+
+app::masthead "$APP_NAME" "$APP_VERSION" "$APP_AUTHOR" "$APP_YEAR" "$APP_LICENSE" "$APP_DESC"
+app::processLock $(basename "$0") 302
+
+
 # Full path to the selected FLAC file from service menu
 FLAC_FILE="$1"
 
@@ -38,3 +72,7 @@ shnsplit -f "$CUE_FILE" -o flac -t "%n - %t" -d "$OUTPUT_DIR" "$FLAC_FILE"
 
 cuetag.sh "$CUE_FILE" "$OUTPUT_DIR"/*.flac
 
+
+# clean up
+
+app::processUnlock

@@ -1,0 +1,58 @@
+#!/bin/bash
+
+#
+# This file is part of videokit-kde.
+# Copyright (C) 2025 Tom Brown
+#
+# videokit-kde is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# videokit-kde is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+
+# masthead
+
+source bashdev-app
+
+APP_NAME=$(basename "$0")
+APP_VERSION=0.3.0
+APP_AUTHOR="Tom Brown"
+APP_YEAR="2025"
+APP_LICENSE="GPLv3"
+APP_DESC="AudioKit-KDE CLI utility"
+
+app::masthead "$APP_NAME" "$APP_VERSION" "$APP_AUTHOR" "$APP_YEAR" "$APP_LICENSE" "$APP_DESC"
+
+
+# needed for config information
+
+source bashdev-system
+source audiokit-lib
+
+
+# parameter handling
+
+source bashdev-param
+
+param::add -n "preflight"       -d "preflight checks"                                           -r false -t flag    -s p    -l preflight
+param::add -n "version"         -d "report version"                                             -r false -t flag    -s v    -l version
+param::add -n "reset"           -d "reset process locks"                                        -r false -t flag    -s r    -l reset
+param::parse "$@"
+
+
+# actions
+
+[[ $( param::get preflight ) == "true" ]] && audiokit::preflight
+[[ $( param::get version   ) == "true" ]] && echo "audiokit-util version $APP_VERSION"
+[[ $( param::get reset     ) == "true" ]] && audiokit::resetLocks
+
+

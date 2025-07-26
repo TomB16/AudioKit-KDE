@@ -1,0 +1,70 @@
+#!/bin/bash
+
+#
+# This file is part of videokit-kde.
+# Copyright (C) 2025 Tom Brown
+#
+# videokit-kde is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# videokit-kde is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+
+# source utility package
+
+[[ -n "${__AUDIOKIT_LIB_SH__}" ]] && return ; readonly __AUDIOKIT_LIB_SH__=1
+
+
+
+audiokit::resetLocks() {
+
+    echo "warning: removing lock files"
+	rm -f /tmp/audiokit*lock 2>/dev/null
+
+}
+
+audiokit::preflight() {
+
+	echo "info:  audiokit-kde preflight checks for tools and apps"
+	echo
+
+	#system::notifyMultipleInstalled temperclone powerstat mediainfo inotifywait
+
+	if ! system::notifyInstalled yay; then
+		echo "      yay is needed for installing packages required for this system"
+		echo
+		echo "      sudo pacman -S yay"
+		echo
+	fi
+
+	if ! system::notifyInstalled ffmpeg; then
+		echo "      ffmpeg is needed for audio format conversion"
+		echo
+		echo "      sudo pacman -S ffmpeg4.4"
+		echo
+	fi
+
+	if ! system::notifyInstalled shntool; then
+		echo "      shntool is needed for monolithic FLAC file splitting"
+		echo
+		echo "      yay -S shntool"
+		echo
+	fi
+
+	if ! system::notifyInstalled cuetag.sh; then
+		echo "      cuetools is needed for monolithic FLAC file splitting"
+		echo
+		echo "      sudo pacman -S cuetools"
+		echo
+	fi
+
+}

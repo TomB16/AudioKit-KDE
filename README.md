@@ -36,6 +36,10 @@ On Arch:
 yay -S audiokit-kde
 
 
+## audiokit-util
+
+There is a utility that can be used to check for installed packages, display the version, and reset the process locks if the app is hard terminated.
+
 
 ## Instructions
 
